@@ -1,0 +1,6 @@
+#!/usr/bin/python
+import os,sys
+from argparse import Namespace
+sys.path.insert(0, os.path.abspath('.'))
+import hpgmgconf
+hpgmgconf.configure(Namespace(CC='/usr/local/bin/mpicc', CFLAGS='-D_FORCE_INLINES -O2 -fopenmp -DBLOCKCOPY_TILE_I=32 -DBLOCKCOPY_TILE_J=4 -DBLOCKCOPY_TILE_K=8 -DBOUNDARY_TILE_I=64 -DBOUNDARY_TILE_J=16 -DBOUNDARY_TILE_K=16 -DHOST_LEVEL_SIZE_THRESHOLD=10000 -DCUDA_UM_ALLOC -DCUDA_UM_ZERO_COPY -DMPI_ALLOC_ZERO_COPY -DUSE_REG -DUSE_TEX -DMPICH_IGNORE_CXX_SEEK -DMPICH_SKIP_MPICXX ', CPPFLAGS='', CUDAARCH='-gencode code=sm_35,arch=compute_35 ', LDFLAGS='', LDLIBS='', NVCC='/usr/bin/nvcc', NVCCFLAGS='-D_FORCE_INLINES -O2 -lineinfo -lnvToolsExt -DBLOCKCOPY_TILE_I=32 -DBLOCKCOPY_TILE_J=4 -DBLOCKCOPY_TILE_K=8 -DBOUNDARY_TILE_I=64 -DBOUNDARY_TILE_J=16 -DBOUNDARY_TILE_K=16 -DHOST_LEVEL_SIZE_THRESHOLD=10000 -DCUDA_UM_ALLOC -DCUDA_UM_ZERO_COPY -DMPI_ALLOC_ZERO_COPY -DUSE_REG -DUSE_TEX -DMPICH_IGNORE_CXX_SEEK -DMPICH_SKIP_MPICXX ', arch='build', fe=False, fv=True, fv_coarse_solver='bicgstab', fv_cycle='F', fv_mpi=True, fv_smoother='gsrb', fv_subcomm=True, petsc_arch='', petsc_dir='', with_hpm=None))

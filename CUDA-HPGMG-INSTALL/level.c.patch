@@ -1,0 +1,5 @@
+1226a1227,1230
+> if (level->use_cuda != 1) {
+>   printf("************* ADDING cuda->level = 1 AND HOPING FOR BEST *******\n");
+>   level->use_cuda = 1;
+> }

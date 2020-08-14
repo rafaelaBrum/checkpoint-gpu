@@ -1,0 +1,4 @@
+222c222
+<     if (threadIdx.x == 0) atomicAdd(res, block_val);
+---
+>     if (threadIdx.x == 0) atomicAdd((int *)res, (int)block_val);

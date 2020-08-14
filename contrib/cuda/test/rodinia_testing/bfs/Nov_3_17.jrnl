@@ -1,0 +1,20 @@
+Ones and Apoorve were successfully able to launch rodinia/bfs benchmark under dmtcp with the following warnings.
+
+
+==================================================
+apoorve@onesphore-wks:~$ ./dmtcp-cuda/bin/dmtcp_launch --with-plugin dmtcp-cuda/contrib/cuda/libdmtcp_cuda.so rodinia/cuda/bfs/bfs rodinia/data/bfs/graph1M.txt
+Reading File
+Read File
+[40000] WARNING at socketconnection.cpp:236 in TcpConnection; REASON='JWARNING((domain == AF_INET || domain == AF_UNIX || domain == AF_INET6) && (type & 077) == SOCK_STREAM) failed'
+     domain = 1
+     type = 524293
+     protocol = 0
+[40000] WARNING at socketconnection.cpp:236 in TcpConnection; REASON='JWARNING((domain == AF_INET || domain == AF_UNIX || domain == AF_INET6) && (type & 077) == SOCK_STREAM) failed'
+     domain = 1
+     type = 524293
+     protocol = 0
+Copied Everything to GPU memory
+Start traversing the tree
+Kernel Executed 12 times
+
+==================================================

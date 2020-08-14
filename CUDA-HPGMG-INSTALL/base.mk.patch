@@ -1,0 +1,20 @@
+*** base.mk.orig	2017-12-21 19:13:04.663414991 -0500
+--- base.mk	2017-12-21 19:12:20.236427525 -0500
+***************
+*** 66,72 ****
+  # CUDA options
+  NVCC = $(HPGMG_NVCC)
+  CFLAGS += -I$(MPI_DIR)/include
+! LDLIBS += -L$(CUDA_DIR)/lib64 -lcudart -lnvToolsExt -lstdc++
+  # note: ignore HPGMG_CFLAGS here and use HPGMG_NVCC_FLAGS instead
+  HPGMG_COMPILE.cu = $(call quiet,NVCC) -c $(CPPFLAGS) $(CFLAGS) $(HPGMG_NVCC_FLAGS) $(HPGMG_CUDA_ARCH)
+  HPGMG_LINK.cu = $(call quiet,NVCC) -dlink $(HPGMG_LDFLAGS) $(HPGMG_LDLIBS) $(HPGMG_CUDA_ARCH)
+--- 66,73 ----
+  # CUDA options
+  NVCC = $(HPGMG_NVCC)
+  CFLAGS += -I$(MPI_DIR)/include
+! # LDLIBS += -L$(CUDA_DIR)/lib64 -lcudart -lnvToolsExt -lstdc++
+! LDLIBS += -L$(CUDA_DIR)/lib64 -lcudart -export-dynamic -lnvToolsExt -lstdc++
+  # note: ignore HPGMG_CFLAGS here and use HPGMG_NVCC_FLAGS instead
+  HPGMG_COMPILE.cu = $(call quiet,NVCC) -c $(CPPFLAGS) $(CFLAGS) $(HPGMG_NVCC_FLAGS) $(HPGMG_CUDA_ARCH)
+  HPGMG_LINK.cu = $(call quiet,NVCC) -dlink $(HPGMG_LDFLAGS) $(HPGMG_LDLIBS) $(HPGMG_CUDA_ARCH)

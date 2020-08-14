@@ -1,0 +1,13 @@
+*** build.sh.orig	2017-12-20 17:07:29.613281612 -0500
+--- build.sh	2017-12-20 17:07:41.274283473 -0500
+***************
+*** 61,64 ****
+  #./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo -lnvToolsExt $OPTS" --CUDAARCH="$CUDA_ARCH" --fv-smoother="cheby" --no-fe
+  
+  make clean -C build
+! make -j3 -C build
+--- 61,64 ----
+  #./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo -lnvToolsExt $OPTS" --CUDAARCH="$CUDA_ARCH" --fv-smoother="cheby" --no-fe
+  
+  make clean -C build
+! make -j -C build

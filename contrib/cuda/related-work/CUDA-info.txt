@@ -1,0 +1,22 @@
+See: http://www.drdobbs.com/parallel/unified-memory-in-cuda-6-a-brief-overvie/240169095
+for an excellent discussion: "Unified Memory in CUDA 6: A Brief Overview"
+
+For example, CUDA-4.0 (Unified Virtual Addressing) introduced
+  'cudaMemcpyDefault' as an extra possible value of 'enum cudaMemcpyKind'
+A single unified virtual address space meant that
+  "The CUDA runtime could identify where the data was stored based on
+   the value of the pointer. ... An immediate consequence is that the kind
+   flag in the cudaMemcpy argument list becomes obsolete and is replaced
+   by a generic cudaMemcpyDefault."
+
+Note: Unified addressing is not yet supported on Windows Vista or Windows 7
+   for devices that do not use the _TCC driver model_.
+From: http://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__UNIFIED.html
+
+Note: cudaPointerGetAttributes( cudaPointerAttributes* attributes,
+				 const void* ptr ) 
+      sets ptr as input parameter and attributes as output parameter.
+      'attributes->memoryType' can be:
+        'cudaMemoryTypeHost' or 'cudaMemoryTypeDevice'
+From:
+  http://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__UNIFIED.html#group__CUDART__UNIFIED_1gd89830e17d399c064a2f3c3fa8bb4390

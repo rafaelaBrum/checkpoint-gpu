@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -ue
+
+./bfs ../../data/bfs/graph1M.txt
+

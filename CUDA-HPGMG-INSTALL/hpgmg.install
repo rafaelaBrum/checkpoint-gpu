@@ -1,0 +1,55 @@
+  984  vi .bashrc 
+Add:
+USE: bashrc.patch
+module load python-2.7.5
+module load slurm-14.11.8
+module load cuda-6.0
+module load mpich-3.0.4
+# for libquadmath.so (NOTE: CUDA6 on Discovery not supporting gnu-4.9 or higher)
+module load gnu-4.8.1-compilers
+NOTE: HPGMG works with MPICH, but not Open MPI
+  985  source .bashrc 
+  986  salloc -N 1 --exclusive -p par-gpu-2
+  987  ssh `scontrol show hostname`
+  988  git clone https://bitbucket.org/nsakharnykh/hpgmg-cuda.git
+  989  cd hpgmg-cuda/
+USE:  misc.h.patch
+USE:  level.c.patch
+ 1014  vi build.sh
+USE:  build.sh.patch
+ 1015  make -j clean
+USE:  base.mk.patch
+ 1017  ./build.sh
+cat run.sh
+./build/bin/hpgmg-fv 7 8
+
+
+
+=======================
+USING DMTCP-CUDA
+
+git clone https://gc00@github.com/rohgarg/dmtcp-cuda.git
+  REPLACE WITH YOUR github NAME, BELOW
+    (private repo, make sure Rohan included you.)
+# Maybe (until we merge this into 'master'):
+checkout gene-tmp
+cd dmtcp-cuda
+./configure && make -j check-dmtcp1
+cd contrib/cuda
+make clean && make && make cudaproxy
+../../bin/dmtcp_launch --with-plugin ./libdmtcp_cuda.so \
+                       ~/hpgmg-cuda/build/bin/hpgmg-fv 7 8
+
+DEBUGGING:
+  Consider using cuda-memcheck (similar to valgrind) on cudaproxy.
+  (Similar to valgrind, may be incompatible with DMTCP.)
+  SEE: http://docs.nvidia.com/cuda/cuda-memcheck/index.html
+  Consider using with cuda-gdb on the target, cudaproxy.
+  (cuda-gdb) set cuda memcheck on
+
+OTHER TOOLS:
+  cuobjdump
+  SEE: http://docs.nvidia.com/cuda/cuda-binary-utilities/index.html
+
+SANITY TEST:
+  nvidia-smi info
