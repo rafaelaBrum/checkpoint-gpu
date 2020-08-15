@@ -1,18 +1,22 @@
-# Dockerfile to build DMTCP container images.
-FROM ubuntu:15.04
-MAINTAINER Kapil Arya <kapil@ccs.neu.edu>
+FROM nvidia/cuda:8.0-devel-ubuntu16.04
 
+RUN apt update && apt install python -y
+RUN apt install vim -y
 RUN apt-get update -q && apt-get -qy install    \
       build-essential                           \
       git-core                                  \
       make
 
-RUN mkdir -p /dmtcp
+RUN mkdir -p /dmtcp-cuda
 RUN mkdir -p /tmp
 
-WORKDIR /dmtcp
-RUN git clone https://github.com/dmtcp/dmtcp.git /dmtcp && \
-      git checkout master &&                    \
+WORKDIR /dmtcp-cuda
+RUN git clone https://github.com/rohgarg/dmtcp-cuda.git /dmtcp-cuda && \
+      git checkout tags/old-no-auto-generate &&                    \
       git log -n 1
 
-RUN ./configure --prefix=/usr && make -j 2 && make install
+RUN ./configure && make -j 2
+
+WORKDIR contrib/cuda
+RUN make clean && make && make cudaproxy
+
