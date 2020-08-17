@@ -1,7 +1,7 @@
 FROM nvidia/cuda:8.0-devel-ubuntu16.04
 
 RUN apt update && apt install python -y
-RUN apt install vim -y
+RUN apt install vim nano -y
 RUN apt-get update -q && apt-get -qy install    \
       build-essential                           \
       git-core                                  \
