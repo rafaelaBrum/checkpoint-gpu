@@ -68,7 +68,7 @@ NVCC = $(HPGMG_NVCC)
 CFLAGS += -I$(MPI_DIR)/include
 LDLIBS += -L$(CUDA_DIR)/lib64 -lcudart -export-dynamic -lnvToolsExt -lstdc++
 # note: ignore HPGMG_CFLAGS here and use HPGMG_NVCC_FLAGS instead
-HPGMG_COMPILE.cu = $(call quiet,NVCC) -c $(CPPFLAGS) $(CFLAGS) $(HPGMG_NVCC_FLAGS) $(HPGMG_CUDA_ARCH) -I/usr/include/openmpi/ -L/usr/include/#mpi/ -lmpi
+HPGMG_COMPILE.cu = $(call quiet,NVCC) -c $(CPPFLAGS) $(CFLAGS) $(HPGMG_NVCC_FLAGS) $(HPGMG_CUDA_ARCH) -I/usr/include/openmpi/ -L/usr/include/mpi/ -lmpi 
 HPGMG_LINK.cu = $(call quiet,NVCC) -dlink $(HPGMG_LDFLAGS) $(HPGMG_LDLIBS) $(HPGMG_CUDA_ARCH)
 
 hpgmg-fe = $(BINDIR)/hpgmg-fe
