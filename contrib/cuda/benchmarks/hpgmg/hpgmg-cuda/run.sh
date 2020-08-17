@@ -8,7 +8,7 @@ export OMP_NUM_THREADS=4
 export MV2_ENABLE_AFFINITY=0
 
 # Single GPU
-./build/bin/hpgmg-fv 4 5
+benchmarks/hpgmg/hpgmg-cuda/build/bin/hpgmg-fv 4 5
 
 # MPI, one rank per GPU
 #mpirun -np 2 ./build/bin/hpgmg-fv 7 8
