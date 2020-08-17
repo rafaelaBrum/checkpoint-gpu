@@ -60,5 +60,5 @@ OPTS+="-DMPICH_SKIP_MPICXX "
 # Chebyshev smoother
 #./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo -lnvToolsExt $OPTS" --CUDAARCH="$CUDA_ARCH" --fv-smoother="cheby" --no-fe
 
-make clean -C build V=1
-make -j3 -C build V=1
+make clean -C build
+make -j3 -C build
