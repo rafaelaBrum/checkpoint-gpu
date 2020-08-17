@@ -11,9 +11,7 @@ RUN mkdir -p /dmtcp-cuda
 RUN mkdir -p /tmp
 
 WORKDIR /dmtcp-cuda
-RUN git clone https://github.com/rohgarg/dmtcp-cuda.git /dmtcp-cuda && \
-      git checkout tags/old-no-auto-generate &&                    \
-      git log -n 1
+RUN git clone https://github.com/rafaelaBrum/checkpoint-gpu.git /dmtcp-cuda
 
 RUN ./configure && make -j 2
 
