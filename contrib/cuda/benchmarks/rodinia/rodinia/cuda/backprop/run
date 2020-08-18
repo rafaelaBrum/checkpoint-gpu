@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -ue
 
-./backprop_cuda 65536
+./backprop 65536
 
