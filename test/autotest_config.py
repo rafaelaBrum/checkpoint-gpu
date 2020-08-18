@@ -48,8 +48,8 @@ MPICH_MPDCLEANUP=""
 
 # USES_OPENMPI_ORTED="@USES_OPENMPI_ORTED@"
 HAS_OPENMPI="no"
-OPENMPI_MPICC="no"
-OPENMPI_MPIRUN="no"
+OPENMPI_MPICC="/usr/bin/mpicc.openmpi"
+OPENMPI_MPIRUN="/usr/bin/mpirun.openmpi"
 
 if USE_M32:
   HAS_READLINE="no"

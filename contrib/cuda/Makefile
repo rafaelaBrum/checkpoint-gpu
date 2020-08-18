@@ -54,7 +54,7 @@ vi:
 
 cudaproxy: cudaproxy.cu
 	# nvcc -cudart shared -DSTANDALONE -I. -I${DMTCP_INCLUDE} -I${JALIB_INCLUDE} -I${DMTCP_ROOT}/src -Xcompiler -fPIC -g -O0 -std c++11 -ccbin ${NVCC_CXX} -shared -o lib$@.so $< ../../src/libjalib.a -ldl
-	nvcc -cudart shared -DSTANDALONE -I. -I${DMTCP_INCLUDE} -I${JALIB_INCLUDE} -I${DMTCP_ROOT}/src -Xcompiler -fPIC -g -O0 -shared -o lib$@.so $< ../../src/libjalib.a -ldl
+	nvcc -cudart shared -DSTANDALONE -I. -I${DMTCP_INCLUDE} -I${JALIB_INCLUDE} -I${DMTCP_ROOT}/src -Xcompiler -fPIC -g -O0 -shared -o lib$@.so $< ../../src/libjalib.a -ldl -arch=sm_30
 
 # tests ---------------------------------------
 
