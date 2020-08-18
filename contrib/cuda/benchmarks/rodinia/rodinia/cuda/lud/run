@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -ue
 
-./lud -s 1024 -v
+./lud_cuda -s 1024 -v
 
