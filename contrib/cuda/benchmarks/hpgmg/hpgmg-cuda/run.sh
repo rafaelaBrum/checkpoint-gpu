@@ -9,7 +9,7 @@ export MV2_ENABLE_AFFINITY=0
 
 # Single GPU
 #benchmarks/hpgmg/hpgmg-cuda/build/bin/hpgmg-fv 4 5
-./build/bin/hpgmg-fv 4 5
-
+#./build/bin/hpgmg-fv 4 5
+/dmtcp-cuda/contrib/cuda/benchmarks/hpgmg/hpgmg-cuda/build/bin/hpgmg-fv 4 5
 # MPI, one rank per GPU
 #mpirun -np 2 ./build/bin/hpgmg-fv 7 8
