@@ -6,7 +6,7 @@ CC_FLAGS = -g  -O2
 
 # CUDA compiler
 NVCC = $(CUDA_ROOT)/bin/nvcc
-NVCC_FLAGS = -I$(CUDA_ROOT)/include -D_FORCE_INLINES
+NVCC_FLAGS = -I$(CUDA_ROOT)/include -D_FORCE_INLINES -arch=sm_30
 
 # 'make dbg=1' enables NVCC debugging
 ifeq ($(dbg),1)
@@ -22,7 +22,7 @@ endif
 
 
 backprop: backprop.o facetrain.o imagenet.o backprop_cuda.o
-	$(CC) $(CC_FLAGS) backprop.o facetrain.o imagenet.o backprop_cuda.o -o backprop -L$(CUDA_LIB_DIR) -lcuda -lcudart -lm
+	$(CC) $(CC_FLAGS) backprop.o facetrain.o imagenet.o backprop_cuda.o -o backprop $(LDFLAGS) -lm -lcudart
 
 %.o: %.[ch]
 	$(CC) $(CC_FLAGS) $< -c
@@ -34,11 +34,11 @@ backprop.o: backprop.c backprop.h
 	$(CC) $(CC_FLAGS) backprop.c -c
 
 backprop_cuda.o: backprop_cuda.cu backprop.h
-	$(NVCC) $(NVCC_FLAGS) -c backprop_cuda.cu
+	$(NVCC) $(NVCC_FLAGS) -c backprop_cuda.cu $(LDFLAGS)
 
 imagenet.o: imagenet.c backprop.h
 	$(CC) $(CC_FLAGS) imagenet.c -c
 
 
 clean:
-	rm -f *.o *~ backprop backprop_cuda.linkinfo
+	rm -f *.o *~ backprop backprop_cuda.linkinfo Makefile

@@ -36,7 +36,6 @@ NVCC=$(CUDA_ROOT)/bin/nvcc
 
 LDLIBS   += -lcudart -export-dynamic
 
-
 #
 # NVCC compilation
 #

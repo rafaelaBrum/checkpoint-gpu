@@ -9,7 +9,7 @@ SRC = bfs.cu
 EXE = bfs
 
 release: $(SRC)
-	$(CC) $(SRC) -o $(EXE) -I$(INCLUDE) -L$(LDFLAGS)
+	$(CC) $(SRC) -o $(EXE) -I$(INCLUDE) -L$(LDFLAGS) -arch=sm_30
 
 enum: $(SRC)
 	$(CC) -deviceemu $(SRC) -o $(EXE) -I$(INCLUDE) -L$(LDFLAGS)
@@ -21,4 +21,4 @@ debugenum: $(SRC)
 	$(CC) -g -deviceemu $(SRC) -o $(EXE) -I$(INCLUDE) -L$(LDFLAGS)
 
 clean: $(SRC)
-	rm -f $(EXE) $(EXE).linkinfo result.txt
+	rm -f $(EXE) $(EXE).linkinfo result.txt Makefile
