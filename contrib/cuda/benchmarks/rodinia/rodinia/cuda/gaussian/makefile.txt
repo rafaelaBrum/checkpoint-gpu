@@ -1,0 +1,14 @@
+include ../common.mk
+
+CC := $(CUDA_ROOT)/bin/nvcc
+
+INCLUDE := $(CUDA_ROOT)/include
+
+SRC = gaussian.cu
+EXE = gaussian
+
+release: $(SRC)
+	$(CC) $(KERNEL_DIM) $(SRC) -o $(EXE) -I$(INCLUDE) -L$(LDFLAGS)
+
+clean:
+	rm gaussian
