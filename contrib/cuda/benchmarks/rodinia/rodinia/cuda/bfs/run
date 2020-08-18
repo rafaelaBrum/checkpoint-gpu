@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -ue
 
+unxz ../../data/bfs/graph1M.txt.xz
 ./bfs ../../data/bfs/graph1M.txt
+xz ../../data/bfs/graph1M.txt
 
