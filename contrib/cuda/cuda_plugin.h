@@ -455,6 +455,8 @@ void segvfault_initialize(void);
 void reset_uffd(void);
 void* create_shadow_pages(size_t size, cudaSyscallStructure *remoteInfo = NULL);
 void unregister_all_pages();
+static void monitor_pages(void *addr, size_t size, cudaSyscallStructure *remoteInfo = NULL);
+static void reregister_page(void *addr, size_t len);
 void register_all_pages();
 void flushDirtyPages();
 

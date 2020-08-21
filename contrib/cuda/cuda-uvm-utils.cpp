@@ -29,6 +29,9 @@ int SHIFT = -1;
 
 bool haveDirtyPages = false;
 
+
+long uffd;                    /* userfaultfd file descriptor */
+
 // Private global vars
 
 struct ShadowRegion {
@@ -176,8 +179,7 @@ fault_handler_thread(void *arg)
 {
   static struct uffd_msg msg;   /* Data read from userfaultfd */
   static int fault_cnt = 0;     /* Number of faults so far handled */
-  long uffd;                    /* userfaultfd file descriptor */
-  static void *page_addr = NULL;
+  static void *page = NULL;
   struct uffdio_copy uffdio_copy;
   ssize_t nread;
 
@@ -267,7 +269,7 @@ fault_handler_thread(void *arg)
 }
 
 static void
-monitor_pages(void *addr, size_t size, cudaSyscallStructure *remoteInfo = NULL)
+monitor_pages(void *addr, size_t size, cudaSyscallStructure *remoteInfo /*= NULL*/)
 {
   struct uffdio_register uffdio_register;
 
