@@ -14,6 +14,9 @@
 EXTERNC cudaError_t
 cudaMallocManaged(void **pointer, size_t size, unsigned int flags)
 {
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Entering cudaMallocManaged() function");
+  fclose(file);
   if (!initialized)
     proxy_initialize();
 
@@ -49,6 +52,10 @@ cudaMallocManaged(void **pointer, size_t size, unsigned int flags)
 
     log_append(strce_to_send);
   }
+  
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Exiting cudaMallocManaged() function with %d value", ret_val);
+  fclose(file);
 
   return ret_val;
 }

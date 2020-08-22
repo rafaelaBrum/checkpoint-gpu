@@ -18,6 +18,9 @@ int logFd = -1;
 static void
 cuda_event_hook(DmtcpEvent_t event, DmtcpEventData_t *data)
 {
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Entering cuda_event_hook() function");
+  fclose(file);
   /* NOTE:  See warning in plugin/README about calls to printf here. */
   switch (event) {
   case DMTCP_EVENT_INIT:
@@ -45,6 +48,9 @@ cuda_event_hook(DmtcpEvent_t event, DmtcpEventData_t *data)
   default:
     break;
   }
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Exiting cuda_event_hook() function");
+  fclose(file);
 }
 
 /*
@@ -54,20 +60,35 @@ cuda_event_hook(DmtcpEvent_t event, DmtcpEventData_t *data)
 static void
 pre_ckpt()
 {
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Entering pre_ckpt() function");
+  fclose(file);
   unregister_all_pages();
   copy_data_to_host();
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Exiting pre_ckpt() function");
+  fclose(file);
 }
 
 static void
 resume()
 {
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Entering resume() function");
+  fclose(file);
   register_all_pages();
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Exiting resume() function");
+  fclose(file);
 }
 
 
 static void
 restart()
 {
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Entering restart() function");
+  fclose(file);
   JTRACE("Trying to re-init the CUDA driver");
   close(skt_master);
   proxy_initialize();
@@ -105,6 +126,9 @@ restart()
   }
   copy_data_to_device();
   enable_cuda_call_logging();
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Exiting restart() function");
+  fclose(file);
 }
 
 static DmtcpBarrier cudaPluginBarriers[] = {

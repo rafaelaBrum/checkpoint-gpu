@@ -45,21 +45,36 @@ static int start_proxy(void);
 // to the user main function.
 int main_wrapper()
 {
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Entering main_wrapper() function");
+  fclose(file);
   start_proxy();
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Exiting main_wrapper() function");
+  fclose(file);
   return 0;
 }
 
 __attribute__((constructor))
 void proxy_init()
 {
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Entering proxy_init() function");
+  fclose(file);
   void *handle = dlopen(NULL, RTLD_NOW);
   void *addr = dlsym(handle, "main");
   assert(addr != NULL);
   dmtcp_setup_trampoline_by_addr(addr, (void*)&main_wrapper, &main_trampoline_info);
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Exiting proxy_init() function");
+  fclose(file);
 }
 
 static int start_proxy(void)
 {
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Entering start_proxy() function");
+  fclose(file);
   // set up the server
   int skt_proxy, skt_accept;
   struct sockaddr_un sa_proxy;
@@ -156,11 +171,17 @@ static int start_proxy(void)
     }
 
    }
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Exiting start_proxy() function");
+  fclose(file);
 }
 
 
 int compute(int fd, cudaSyscallStructure *structure)
 {
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Entering compute() function");
+  fclose(file);
   int return_val;
   enum cuda_syscalls op = structure->op;
 
@@ -732,6 +753,10 @@ int compute(int fd, cudaSyscallStructure *structure)
       exit(EXIT_FAILURE);
 
   }
+  
+  FILE *file = fopen("tracelog.txt", "w"");
+  fprintf(file, "Exiting compute() function with %d value", return_val);
+  fclose(file);
 
   return return_val;
 }
