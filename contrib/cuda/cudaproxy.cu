@@ -45,12 +45,12 @@ static int start_proxy(void);
 // to the user main function.
 int main_wrapper()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering main_wrapper() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering main_wrapper() function\n");
   fclose(file);
   start_proxy();
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting main_wrapper() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting main_wrapper() function\n");
   fclose(file);
   return 0;
 }
@@ -58,22 +58,22 @@ int main_wrapper()
 __attribute__((constructor))
 void proxy_init()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering proxy_init() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering proxy_init() function\n");
   fclose(file);
   void *handle = dlopen(NULL, RTLD_NOW);
   void *addr = dlsym(handle, "main");
   assert(addr != NULL);
   dmtcp_setup_trampoline_by_addr(addr, (void*)&main_wrapper, &main_trampoline_info);
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting proxy_init() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting proxy_init() function\n");
   fclose(file);
 }
 
 static int start_proxy(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering start_proxy() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering start_proxy() function\n");
   fclose(file);
   // set up the server
   int skt_proxy, skt_accept;
@@ -171,16 +171,13 @@ static int start_proxy(void)
     }
 
    }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting start_proxy() function");
-  fclose(file);
 }
 
 
 int compute(int fd, cudaSyscallStructure *structure)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering compute() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering compute() function\n");
   fclose(file);
   int return_val;
   enum cuda_syscalls op = structure->op;
@@ -754,8 +751,8 @@ int compute(int fd, cudaSyscallStructure *structure)
 
   }
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting compute() function with %d value", return_val);
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting compute() function with %d value\n", return_val);
   fclose(file);
 
   return return_val;

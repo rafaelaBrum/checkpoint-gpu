@@ -20,16 +20,16 @@ struct MallocRegion {
 static dmtcp::vector<MallocRegion>&
 allMallocRegions()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering allMallocRegions() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering allMallocRegions() function\n");
   fclose(file);
   static dmtcp::vector<MallocRegion> *instance = NULL;
   if (instance == NULL) {
     void *buffer = JALLOC_MALLOC(1024 * 1024);
     instance = new (buffer)dmtcp::vector<MallocRegion>();
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting allMallocRegions() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting allMallocRegions() function\n");
   fclose(file);
   return *instance;
 }
@@ -37,8 +37,8 @@ allMallocRegions()
 void
 copy_data_to_host()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering copy_data_to_host() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering copy_data_to_host() function\n");
   fclose(file);
   dmtcp::vector<MallocRegion>::iterator it;
   for (it = allMallocRegions().begin(); it != allMallocRegions().end(); it++) {
@@ -48,23 +48,23 @@ copy_data_to_host()
     it->host_addr = page;
     cudaMemcpy(page, it->addr, it->len, cudaMemcpyDeviceToHost);
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting copy_data_to_host() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting copy_data_to_host() function\n");
   fclose(file);
 }
 
 void
 copy_data_to_device()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering copy_data_to_device() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering copy_data_to_device() function\n");
   fclose(file);
   dmtcp::vector<MallocRegion>::iterator it;
   for (it = allMallocRegions().begin(); it != allMallocRegions().end(); it++) {
     cudaMemcpy(it->addr, it->host_addr, it->len, cudaMemcpyHostToDevice);
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting copy_data_to_device() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting copy_data_to_device() function\n");
   fclose(file);
 }
 
@@ -72,8 +72,8 @@ copy_data_to_device()
 EXTERNC cudaError_t
 cudaMalloc(void **pointer, size_t size)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMalloc() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMalloc() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -107,8 +107,8 @@ cudaMalloc(void **pointer, size_t size)
     allMallocRegions().push_back(r);
   }
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMalloc() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMalloc() function\n");
   fclose(file);
   return ret_val;
 }
@@ -117,8 +117,8 @@ cudaMalloc(void **pointer, size_t size)
 EXTERNC cudaError_t
 cudaFree(void *pointer)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaFree() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaFree() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -141,8 +141,8 @@ cudaFree(void *pointer)
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaFree() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaFree() function\n");
   fclose(file);
 
   return ret_val;
@@ -151,8 +151,8 @@ cudaFree(void *pointer)
 EXTERNC cudaError_t
 cudaPointerGetAttributes(cudaPointerAttributes *attributes, const void *ptr)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaPointerGetAttributes() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaPointerGetAttributes() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -172,8 +172,8 @@ cudaPointerGetAttributes(cudaPointerAttributes *attributes, const void *ptr)
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaPointerGetAttributes() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaPointerGetAttributes() function\n");
   fclose(file);
 
   return ret_val;
@@ -184,8 +184,8 @@ EXTERNC cudaError_t
 cudaMemcpy(void *pointer1, const void *pointer2, size_t size,
            enum cudaMemcpyKind direction)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMemcpy() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMemcpy() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -295,8 +295,8 @@ cudaMemcpy(void *pointer1, const void *pointer2, size_t size,
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMemcpy() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMemcpy() function\n");
   fclose(file);
   
   return ret_val;
@@ -307,8 +307,8 @@ EXTERNC cudaError_t
 cudaMemcpy2D(void *dst, size_t dpitch, const void *src, size_t spitch,
              size_t width, size_t height, enum cudaMemcpyKind direction)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMemcpy2D() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMemcpy2D() function\n");
   fclose(file);
   
   if (!initialized)
@@ -389,8 +389,8 @@ cudaMemcpy2D(void *dst, size_t dpitch, const void *src, size_t spitch,
 //  strce_to_send.syscall_type.cuda_memcpy.direction = direction;
 
   log_append(strce_to_send);
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMemcpy2D() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMemcpy2D() function\n");
   fclose(file);
   return ret_val;
 }
@@ -403,8 +403,8 @@ cudaMallocArray(struct cudaArray **array,
                 const struct cudaChannelFormatDesc *desc,
                 size_t width, size_t height, unsigned int flags)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMallocArray() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMallocArray() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -440,8 +440,8 @@ cudaMallocArray(struct cudaArray **array,
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMallocArray() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMallocArray() function\n");
   fclose(file);
 
   return ret_val;
@@ -451,8 +451,8 @@ cudaMallocArray(struct cudaArray **array,
 EXTERNC cudaError_t
 cudaFreeArray(struct cudaArray *array)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaFreeArray() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaFreeArray() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -474,8 +474,8 @@ cudaFreeArray(struct cudaArray *array)
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaFreeArray() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaFreeArray() function\n");
   fclose(file);
 
   return ret_val;
@@ -488,8 +488,8 @@ EXTERNC cudaError_t
 cudaConfigureCall(dim3 gridDim, dim3 blockDim,
                   size_t sharedMem, cudaStream_t stream)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaConfigureCall() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaConfigureCall() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -514,8 +514,8 @@ cudaConfigureCall(dim3 gridDim, dim3 blockDim,
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaConfigureCall() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaConfigureCall() function\n");
   fclose(file);
 
   return ret_val;
@@ -525,8 +525,8 @@ cudaConfigureCall(dim3 gridDim, dim3 blockDim,
 EXTERNC cudaError_t
 cudaSetupArgument(const void *arg, size_t size, size_t offset)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaSetupArgument() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaSetupArgument() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -557,8 +557,8 @@ cudaSetupArgument(const void *arg, size_t size, size_t offset)
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaSetupArgument() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaSetupArgument() function\n");
   fclose(file);
 
   return ret_val;
@@ -568,8 +568,8 @@ cudaSetupArgument(const void *arg, size_t size, size_t offset)
 EXTERNC cudaError_t
 cudaLaunch(const void *func)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaLaunch() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaLaunch() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -596,8 +596,8 @@ cudaLaunch(const void *func)
   log_append(strce_to_send);
   
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaLaunch() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaLaunch() function\n");
   fclose(file);
 
   return ret_val;
@@ -606,8 +606,8 @@ cudaLaunch(const void *func)
 EXTERNC cudaError_t
 cudaThreadSynchronize(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaThreadSynchronize() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaThreadSynchronize() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -624,8 +624,8 @@ cudaThreadSynchronize(void)
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaThreadSynchronize() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaThreadSynchronize() function\n");
   fclose(file);
 
   return ret_val;
@@ -634,8 +634,8 @@ cudaThreadSynchronize(void)
 EXTERNC cudaError_t
 cudaGetLastError(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaGetLastError() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaGetLastError() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -652,8 +652,8 @@ cudaGetLastError(void)
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaGetLastError() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaGetLastError() function\n");
   fclose(file);
 
   return ret_val;
@@ -662,8 +662,8 @@ cudaGetLastError(void)
 EXTERNC const char*
 cudaGetErrorString(cudaError_t errorCode)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaGetErrorString() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaGetErrorString() function\n");
   fclose(file);
 
   if (!initialized)
@@ -685,8 +685,8 @@ cudaGetErrorString(cudaError_t errorCode)
 
   log_append(strce_to_send);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaGetErrorString() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaGetErrorString() function\n");
   fclose(file);
 
   return (const char *) ret_string;
@@ -695,8 +695,8 @@ cudaGetErrorString(cudaError_t errorCode)
 EXTERNC cudaError_t
 cudaMallocPitch(void** devPtr, size_t* pitch, size_t width, size_t height)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMallocPitch() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMallocPitch() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -724,8 +724,8 @@ cudaMallocPitch(void** devPtr, size_t* pitch, size_t width, size_t height)
   MallocRegion r =  {.addr = *devPtr, .host_addr = NULL, .len = width*height};
   allMallocRegions().push_back(r);
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMallocPitch() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMallocPitch() function\n");
   fclose(file);
 
   return ret_val;
@@ -735,8 +735,8 @@ cudaMallocPitch(void** devPtr, size_t* pitch, size_t width, size_t height)
 EXTERNC cudaError_t
 cudaDeviceReset( void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaDeviceReset() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaDeviceReset() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -750,8 +750,8 @@ cudaDeviceReset( void)
 
   log_append(rcvd_strce);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaDeviceReset() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaDeviceReset() function\n");
   fclose(file);
   return ret_val;
 }
@@ -760,8 +760,8 @@ EXTERNC cudaError_t
 cudaMemcpyToSymbol(const void * symbol, const void * src, size_t count, \
                                size_t offset, enum cudaMemcpyKind kind)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMemcpyToSymbol() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMemcpyToSymbol() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -791,8 +791,8 @@ cudaMemcpyToSymbol(const void * symbol, const void * src, size_t count, \
 
   log_append(rcvd_strce);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMemcpyToSymbol() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMemcpyToSymbol() function\n");
   fclose(file);
   return ret_val;
 }
@@ -800,8 +800,8 @@ cudaMemcpyToSymbol(const void * symbol, const void * src, size_t count, \
 EXTERNC cudaChannelFormatDesc
 cudaCreateChannelDesc(int x, int y, int z, int w, enum cudaChannelFormatKind f)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaCreateChannelDesc() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaCreateChannelDesc() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -825,8 +825,8 @@ cudaCreateChannelDesc(int x, int y, int z, int w, enum cudaChannelFormatKind f)
 
   log_append(rcvd_strce);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaCreateChannelDesc() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaCreateChannelDesc() function\n");
   fclose(file);
 
   return (rcvd_strce.syscall_type).cuda_create_channel_desc.ret_val;
@@ -837,8 +837,8 @@ cudaBindTexture2D(size_t * offset, const struct textureReference * texref, \
                   const void * devPtr, const cudaChannelFormatDesc * desc, \
                   size_t width, size_t height, size_t pitch)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaBindTexture2D() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaBindTexture2D() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -871,8 +871,8 @@ cudaBindTexture2D(size_t * offset, const struct textureReference * texref, \
 
   log_append(rcvd_strce);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaBindTexture2D() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaBindTexture2D() function\n");
   fclose(file);
 
   return ret_val;
@@ -882,8 +882,8 @@ EXTERNC cudaError_t
 cudaBindTexture(size_t * offset, const textureReference * texref, \
 const void * devPtr, const cudaChannelFormatDesc * desc, size_t size)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaBindTexture() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaBindTexture() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -916,8 +916,8 @@ const void * devPtr, const cudaChannelFormatDesc * desc, size_t size)
   strce_to_send.syscall_type.cuda_bind_texture.offsetp = offset;
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaBindTexture() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaBindTexture() function\n");
   fclose(file);
 
   return ret_val;
@@ -928,8 +928,8 @@ EXTERNC cudaError_t cudaCreateTextureObject (cudaTextureObject_t * pTexObject, \
   const struct cudaTextureDesc *pTexDesc, \
   const struct cudaResourceViewDesc * pResViewDesc)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaCreateTextureObject() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaCreateTextureObject() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -951,8 +951,8 @@ EXTERNC cudaError_t cudaCreateTextureObject (cudaTextureObject_t * pTexObject, \
                                             pTexObjectp = pTexObject;
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaCreateTextureObject() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaCreateTextureObject() function\n");
   fclose(file);
   return ret_val;
 }
@@ -960,8 +960,8 @@ EXTERNC cudaError_t cudaCreateTextureObject (cudaTextureObject_t * pTexObject, \
 EXTERNC cudaError_t
 cudaPeekAtLastError(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaPeekAtLastError() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaPeekAtLastError() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -975,8 +975,8 @@ cudaPeekAtLastError(void)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaPeekAtLastError() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaPeekAtLastError() function\n");
   fclose(file);
 
   return ret_val;
@@ -985,8 +985,8 @@ cudaPeekAtLastError(void)
 EXTERNC cudaError_t
 cudaProfilerStart(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaProfilerStart() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaProfilerStart() function\n");
   fclose(file);
 
   if (!initialized)
@@ -1001,8 +1001,8 @@ cudaProfilerStart(void)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaProfilerStart() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaProfilerStart() function\n");
   fclose(file);
 
   return ret_val;
@@ -1011,8 +1011,8 @@ cudaProfilerStart(void)
 EXTERNC cudaError_t
 cudaProfilerStop(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaProfilerSop() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaProfilerSop() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1026,8 +1026,8 @@ cudaProfilerStop(void)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaProfilerSop() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaProfilerSop() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1035,8 +1035,8 @@ cudaProfilerStop(void)
 EXTERNC cudaError_t
 cudaStreamSynchronize(cudaStream_t stream)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaStreamSynchronize() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaStreamSynchronize() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1051,8 +1051,8 @@ cudaStreamSynchronize(cudaStream_t stream)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaStreamSynchronize() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaStreamSynchronize() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1060,8 +1060,8 @@ cudaStreamSynchronize(cudaStream_t stream)
 EXTERNC cudaError_t
 cudaUnbindTexture (const textureReference* texref)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaUnbindTexture() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaUnbindTexture() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1076,8 +1076,8 @@ cudaUnbindTexture (const textureReference* texref)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaUnbindTexture() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaUnbindTexture() function\n");
   fclose(file);
 
   return ret_val;
@@ -1086,8 +1086,8 @@ cudaUnbindTexture (const textureReference* texref)
 EXTERNC cudaError_t
 cudaDestroyTextureObject (cudaTextureObject_t texObject)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaDestroyTextureObject() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaDestroyTextureObject() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1102,8 +1102,8 @@ cudaDestroyTextureObject (cudaTextureObject_t texObject)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaDestroyTextureObject() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaDestroyTextureObject() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1112,8 +1112,8 @@ cudaDestroyTextureObject (cudaTextureObject_t texObject)
 EXTERNC cudaError_t
 cudaEventDestroy (cudaEvent_t event)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaEventDestroy() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaEventDestroy() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1128,8 +1128,8 @@ cudaEventDestroy (cudaEvent_t event)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaEventDestroy() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaEventDestroy() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1137,8 +1137,8 @@ cudaEventDestroy (cudaEvent_t event)
 EXTERNC cudaError_t
 cudaEventQuery (cudaEvent_t event)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaEventQuery() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaEventQuery() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1153,8 +1153,8 @@ cudaEventQuery (cudaEvent_t event)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaEventQuery() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaEventQuery() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1162,8 +1162,8 @@ cudaEventQuery (cudaEvent_t event)
 EXTERNC cudaError_t
 cudaFreeHost(void *ptr)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaFreeHost() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaFreeHost() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1180,8 +1180,8 @@ cudaFreeHost(void *ptr)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaFreeHost() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaFreeHost() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1189,8 +1189,8 @@ cudaFreeHost(void *ptr)
 EXTERNC cudaError_t
 cudaDeviceCanAccessPeer (int* canAccessPeer, int device, int peerDevice)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaFreeHost() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaFreeHost() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1212,8 +1212,8 @@ cudaDeviceCanAccessPeer (int* canAccessPeer, int device, int peerDevice)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaFreeHost() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaFreeHost() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1221,8 +1221,8 @@ cudaDeviceCanAccessPeer (int* canAccessPeer, int device, int peerDevice)
 EXTERNC cudaError_t
 cudaDeviceGetAttribute (int* value, cudaDeviceAttr attr, int device)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaDeviceGetAttribute() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaDeviceGetAttribute() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1242,8 +1242,8 @@ cudaDeviceGetAttribute (int* value, cudaDeviceAttr attr, int device)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaDeviceGetAttribute() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaDeviceGetAttribute() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1251,8 +1251,8 @@ cudaDeviceGetAttribute (int* value, cudaDeviceAttr attr, int device)
 EXTERNC cudaError_t
 cudaDeviceSetCacheConfig (cudaFuncCache cacheConfig)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaDeviceSetCacheConfig() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaDeviceSetCacheConfig() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1270,8 +1270,8 @@ cudaDeviceSetCacheConfig (cudaFuncCache cacheConfig)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaDeviceSetCacheConfig() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaDeviceSetCacheConfig() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1279,8 +1279,8 @@ cudaDeviceSetCacheConfig (cudaFuncCache cacheConfig)
 EXTERNC cudaError_t
 cudaDeviceSetSharedMemConfig (cudaSharedMemConfig config)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaDeviceSetSharedMemConfig() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaDeviceSetSharedMemConfig() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1297,8 +1297,8 @@ cudaDeviceSetSharedMemConfig (cudaSharedMemConfig config)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaDeviceSetSharedMemConfig() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaDeviceSetSharedMemConfig() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1306,8 +1306,8 @@ cudaDeviceSetSharedMemConfig (cudaSharedMemConfig config)
 EXTERNC cudaError_t
 cudaDeviceSynchronize ( void )
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaDeviceSynchronize() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaDeviceSynchronize() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1323,8 +1323,8 @@ cudaDeviceSynchronize ( void )
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaDeviceSynchronize() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaDeviceSynchronize() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1332,8 +1332,8 @@ cudaDeviceSynchronize ( void )
 EXTERNC cudaError_t
 cudaEventCreateWithFlags ( cudaEvent_t* event, unsigned int  flags )
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaEventCreateWithFlags() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaEventCreateWithFlags() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1351,8 +1351,8 @@ cudaEventCreateWithFlags ( cudaEvent_t* event, unsigned int  flags )
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaEventCreateWithFlags() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaEventCreateWithFlags() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1360,8 +1360,8 @@ cudaEventCreateWithFlags ( cudaEvent_t* event, unsigned int  flags )
 EXTERNC cudaError_t
 cudaEventRecord(cudaEvent_t event, cudaStream_t stream)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaEventRecord() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaEventRecord() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1380,8 +1380,8 @@ cudaEventRecord(cudaEvent_t event, cudaStream_t stream)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaEventRecord() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaEventRecord() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1389,8 +1389,8 @@ cudaEventRecord(cudaEvent_t event, cudaStream_t stream)
 EXTERNC cudaError_t
 cudaFuncGetAttributes(cudaFuncAttributes* attr, const void* func)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaFuncGetAttributes() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaFuncGetAttributes() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1410,8 +1410,8 @@ cudaFuncGetAttributes(cudaFuncAttributes* attr, const void* func)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaFuncGetAttributes() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaFuncGetAttributes() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1419,8 +1419,8 @@ cudaFuncGetAttributes(cudaFuncAttributes* attr, const void* func)
 EXTERNC cudaError_t
 cudaGetDevice ( int* device )
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaFuncGetAttributes() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaFuncGetAttributes() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1438,8 +1438,8 @@ cudaGetDevice ( int* device )
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaFuncGetAttributes() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaFuncGetAttributes() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1447,8 +1447,8 @@ cudaGetDevice ( int* device )
 EXTERNC cudaError_t
 cudaGetDeviceCount(int* count)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaGetDeviceCount() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaGetDeviceCount() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1466,8 +1466,8 @@ cudaGetDeviceCount(int* count)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaGetDeviceCount() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaGetDeviceCount() function\n");
   fclose(file);
   return ret_val;
 }
@@ -1475,8 +1475,8 @@ cudaGetDeviceCount(int* count)
 EXTERNC cudaError_t
 cudaGetDeviceProperties(cudaDeviceProp* prop, int device)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaGetDeviceProperties() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaGetDeviceProperties() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1494,8 +1494,8 @@ cudaGetDeviceProperties(cudaDeviceProp* prop, int device)
   *prop = rcvd_strce.syscall_type.cuda_getDeviceProperties.prop;
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaGetDeviceProperties() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaGetDeviceProperties() function\n");
   fclose(file);
 
   return ret_val;
@@ -1504,8 +1504,8 @@ cudaGetDeviceProperties(cudaDeviceProp* prop, int device)
 EXTERNC cudaError_t
 cudaMemset(void* devPtr, int  value, size_t count)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMemset() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMemset() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1524,8 +1524,8 @@ cudaMemset(void* devPtr, int  value, size_t count)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMemset() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMemset() function\n");
   fclose(file);
 
   return ret_val;
@@ -1534,8 +1534,8 @@ cudaMemset(void* devPtr, int  value, size_t count)
 EXTERNC cudaError_t
 cudaSetDevice (int device)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaSetDevice() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaSetDevice() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1552,8 +1552,8 @@ cudaSetDevice (int device)
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaSetDevice() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaSetDevice() function\n");
   fclose(file);
 
   return ret_val;
@@ -1562,12 +1562,12 @@ cudaSetDevice (int device)
 EXTERNC cudaError_t
 cudaMallocHost ( void** ptr, size_t size )
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMallocHost() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMallocHost() function\n");
   fclose(file);
   // FIXME: need to be implemented later.
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMallocHost() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMallocHost() function\n");
   fclose(file);
   return cudaMalloc(ptr, size);
 }
@@ -1576,13 +1576,13 @@ EXTERNC cudaError_t
 cudaMemcpyAsync (void* dst, const void* src, size_t count, \
         cudaMemcpyKind kind, cudaStream_t stream)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMemcpyAsync() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMemcpyAsync() function\n");
   fclose(file);
   // FIXME: need to be implemented later.
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMemcpyAsync() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMemcpyAsync() function\n");
   fclose(file);
   return cudaMemcpy(dst, src, count, kind);
 }
@@ -1590,11 +1590,11 @@ cudaMemcpyAsync (void* dst, const void* src, size_t count, \
 EXTERNC cudaError_t
 cudaMemsetAsync (void* devPtr, int  value, size_t count, cudaStream_t stream)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaMemsetAsync() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaMemsetAsync() function\n");
   fclose(file);
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaMemsetAsync() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaMemsetAsync() function\n");
   fclose(file);
   return cudaMemset(devPtr, value, count);
 }
@@ -1604,8 +1604,8 @@ EXTERNC cudaError_t
 cudaOccupancyMaxActiveBlocksPerMultiprocessor (int *numBlocks, \
            const void *func, int blockSize, size_t dynamicSMemSize)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering cudaOccupancyMaxActiveBlocksPerMultiprocessor() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering cudaOccupancyMaxActiveBlocksPerMultiprocessor() function\n");
   fclose(file);
   if (!initialized)
     proxy_initialize();
@@ -1634,8 +1634,8 @@ cudaOccupancyMaxActiveBlocksPerMultiprocessor (int *numBlocks, \
 
   log_append(strce_to_send);
 
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting cudaOccupancyMaxActiveBlocksPerMultiprocessor() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting cudaOccupancyMaxActiveBlocksPerMultiprocessor() function\n");
   fclose(file);
 
   return ret_val;

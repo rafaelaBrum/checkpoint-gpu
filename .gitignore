@@ -53,3 +53,6 @@ mtcp/util-arch
 
 ckpt_*.dmtcp
 dmtcp_restart_script*
+
+
+tracelog.txt

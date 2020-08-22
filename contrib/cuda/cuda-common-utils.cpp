@@ -39,8 +39,8 @@ bool enableCudaCallLogging = true;
 // initialize the proxy
 void proxy_initialize(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering proxy_initialize() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering proxy_initialize() function\n");
   fclose(file);
   memset(&sa_proxy, 0, sizeof(sa_proxy));
   strcpy(sa_proxy.sun_path, SKTNAME);
@@ -94,8 +94,8 @@ void proxy_initialize(void)
 #endif
 
   initialized = True;
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting proxy_initialize() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting proxy_initialize() function\n");
   fclose(file);
 }
 
@@ -103,32 +103,32 @@ void proxy_initialize(void)
 // append a cuda system call structure to it
 void log_append(cudaSyscallStructure record)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering log_append() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering log_append() function\n");
   fclose(file);
   JASSERT(write(logFd, &record, sizeof(record)) != -1)(JASSERT_ERRNO);
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting log_append() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting log_append() function\n");
   fclose(file);
 }
 
 bool log_read(cudaSyscallStructure *record)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering log_read() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering log_read() function\n");
   fclose(file);
   int ret = read(logFd, record, sizeof(*record));
   if (ret == -1) {
     JASSERT(false)(JASSERT_ERRNO);
   }
   if (ret == 0 || ret < sizeof(*record)) {
-    FILE *file = fopen("tracelog.txt", "w"");
-    fprintf(file, "Exiting log_read() function with false return");
+    file = fopen("tracelog.txt", "a");
+    fprintf(file, "Exiting log_read() function with false return\n");
     fclose(file);
     return false;
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting log_read() function with true return");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting log_read() function with true return\n");
   fclose(file);
   return true;
 }
@@ -140,8 +140,8 @@ bool log_read(cudaSyscallStructure *record)
 void send_recv(int fd, cudaSyscallStructure *strce_to_send,
                cudaSyscallStructure *rcvd_strce, cudaError_t *ret_val)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering send_recv() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering send_recv() function\n");
   fclose(file);
   // send the structure
   JASSERT(write(fd, strce_to_send, sizeof(cudaSyscallStructure)) != -1)
@@ -180,46 +180,46 @@ void send_recv(int fd, cudaSyscallStructure *strce_to_send,
     }
     break;
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting log_read() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting log_read() function\n");
   fclose(file);
 }
 
 void
 disable_cuda_call_logging()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering disable_cuda_call_logging() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering disable_cuda_call_logging() function\n");
   fclose(file);
   // TODO: Add locks for thread safety
   enableCudaCallLogging = false;
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting disable_cuda_call_logging() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting disable_cuda_call_logging() function\n");
   fclose(file);
 }
 
 void
 enable_cuda_call_logging()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering enable_cuda_call_logging() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering enable_cuda_call_logging() function\n");
   fclose(file);
   // TODO: Add locks for thread safety
   enableCudaCallLogging = true;
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting enable_cuda_call_logging() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting enable_cuda_call_logging() function\n");
   fclose(file);
 }
 
 bool
 should_log_cuda_calls()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering should_log_cuda_calls() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering should_log_cuda_calls() function\n");
   fclose(file);
   // TODO: Add locks for thread safety
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting should_log_cuda_calls() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting should_log_cuda_calls() function\n");
   fclose(file);
   return enableCudaCallLogging;
 }

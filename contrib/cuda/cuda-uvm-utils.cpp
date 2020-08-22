@@ -45,16 +45,16 @@ struct ShadowRegion {
 static dmtcp::map<void*, void*>&
 shadowPageMap()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering shadowPageMap() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering shadowPageMap() function\n");
   fclose(file);
   static dmtcp::map<void*, void*> *instance = NULL;
   if (instance == NULL) {
     void *buffer = JALLOC_MALLOC(1024 * 1024);
     instance = new (buffer)dmtcp::map<void*, void*>();
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting shadowPageMap() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting shadowPageMap() function\n");
   fclose(file);
   return *instance;
 }
@@ -62,16 +62,16 @@ shadowPageMap()
 static dmtcp::vector<ShadowRegion>&
 allShadowRegions()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering allShadowRegions() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering allShadowRegions() function\n");
   fclose(file);
   static dmtcp::vector<ShadowRegion> *instance = NULL;
   if (instance == NULL) {
     void *buffer = JALLOC_MALLOC(1024 * 1024);
     instance = new (buffer)dmtcp::vector<ShadowRegion>();
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting allShadowRegions() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting allShadowRegions() function\n");
   fclose(file);
   return *instance;
 }
@@ -79,8 +79,8 @@ allShadowRegions()
 static bool
 sendDataToProxy(void *remotePtr, void *localPtr, size_t size)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering sendDataToProxy() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering sendDataToProxy() function\n");
   fclose(file);
   cudaSyscallStructure strce_to_send, rcvd_strce;
 
@@ -101,16 +101,16 @@ sendDataToProxy(void *remotePtr, void *localPtr, size_t size)
   JASSERT(ret_val == cudaSuccess)(ret_val)
           .Text("Failed to send UVM dirty pages");
 		  
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting sendDataToProxy() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting sendDataToProxy() function\n");
   fclose(file);
 }
 
 static bool
 receiveDataFromProxy(void *remotePtr, void *localPtr, size_t size)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering receiveDataFromProxy() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering receiveDataFromProxy() function\n");
   fclose(file);
   cudaSyscallStructure strce_to_send, rcvd_strce;
 
@@ -139,16 +139,16 @@ receiveDataFromProxy(void *remotePtr, void *localPtr, size_t size)
           .Text("Failed to receive UVM data");
   JASSERT(read(skt_master, &rcvd_strce, sizeof(rcvd_strce)) != -1)
           (JASSERT_ERRNO);
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting receiveDataFromProxy() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting receiveDataFromProxy() function\n");
   fclose(file);
 }
 
 static void
 markDirtyRegion(void *page)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering markDirtyRegion() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering markDirtyRegion() function\n");
   fclose(file);
   dmtcp::vector<ShadowRegion>::iterator it;
   for (it = allShadowRegions().begin(); it != allShadowRegions().end(); it++) {
@@ -158,16 +158,16 @@ markDirtyRegion(void *page)
       return;
     }
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting markDirtyRegion() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting markDirtyRegion() function\n");
   fclose(file);
 }
 
 void
 flushDirtyPages()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering flushDirtyPages() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering flushDirtyPages() function\n");
   fclose(file);
   if (!haveDirtyPages) return;
 
@@ -186,8 +186,8 @@ flushDirtyPages()
     }
   }
   haveDirtyPages = false;
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting flushDirtyPages() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting flushDirtyPages() function\n");
   fclose(file);
 }
 
@@ -198,8 +198,8 @@ flushDirtyPages()
 void*
 create_shadow_pages(size_t size, cudaSyscallStructure *remoteInfo)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering create_shadow_pages() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering create_shadow_pages() function\n");
   fclose(file);
   int npages = size / page_size + 1;
   void *remoteAddr = remoteInfo->syscall_type.cuda_malloc.pointer;
@@ -210,8 +210,8 @@ create_shadow_pages(size_t size, cudaSyscallStructure *remoteInfo)
 #ifdef USERFAULTFD
   monitor_pages(addr, npages * page_size, remoteInfo);
 #endif
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting create_shadow_pages() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting create_shadow_pages() function\n");
   fclose(file);
   return addr;
 }
@@ -220,8 +220,8 @@ create_shadow_pages(size_t size, cudaSyscallStructure *remoteInfo)
 static void*
 fault_handler_thread(void *arg)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering fault_handler_thread() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering fault_handler_thread() function\n");
   fclose(file);
   static struct uffd_msg msg;   /* Data read from userfaultfd */
   static int fault_cnt = 0;     /* Number of faults so far handled */
@@ -312,16 +312,16 @@ fault_handler_thread(void *arg)
 
     JTRACE("uffdio_copy.copy returned ")(uffdio_copy.copy);
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting fault_handler_thread() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting fault_handler_thread() function\n");
   fclose(file);
 }
 
 static void
 monitor_pages(void *addr, size_t size, cudaSyscallStructure *remoteInfo /*= NULL*/)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering monitor_pages() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering monitor_pages() function\n");
   fclose(file);
   struct uffdio_register uffdio_register;
 
@@ -344,16 +344,16 @@ monitor_pages(void *addr, size_t size, cudaSyscallStructure *remoteInfo /*= NULL
                               i * page_size;
     }
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting monitor_pages() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting monitor_pages() function\n");
   fclose(file);
 }
 
 static void
 reregister_page(void *addr, size_t len)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering reregister_page() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering reregister_page() function\n");
   fclose(file);
   JASSERT(munmap(addr, len) == 0)(JASSERT_ERRNO);
   void *newaddr = mmap(addr, len, PROT_READ | PROT_WRITE,
@@ -361,8 +361,8 @@ reregister_page(void *addr, size_t len)
 
   JASSERT(newaddr != MAP_FAILED)(JASSERT_ERRNO);
   monitor_pages(addr, len);
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting reregister_page() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting reregister_page() function\n");
   fclose(file);
 }
 
@@ -371,8 +371,8 @@ reregister_page(void *addr, size_t len)
 void
 unregister_all_pages()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering unregister_all_pages() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering unregister_all_pages() function\n");
   fclose(file);
   struct uffdio_range uffdio_range;
 
@@ -384,16 +384,16 @@ unregister_all_pages()
 
     JASSERT(ioctl(uffd, UFFDIO_UNREGISTER, &uffdio_range) != -1)(JASSERT_ERRNO);
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting unregister_all_pages() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting unregister_all_pages() function\n");
   fclose(file);
 }
 
 void
 register_all_pages()
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering register_all_pages() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering register_all_pages() function\n");
   fclose(file);
   struct uffdio_register uffdio_register;
 
@@ -407,8 +407,8 @@ register_all_pages()
      */
     reregister_page(it->addr, it->len);
   }
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting register_all_pages() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting register_all_pages() function\n");
   fclose(file);
 }
 
@@ -417,8 +417,8 @@ int ufd_initialized = False;
 void
 userfaultfd_initialize(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering userfaultfd_initialize() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering userfaultfd_initialize() function\n");
   fclose(file);
   if (ufd_initialized) return;
 
@@ -446,16 +446,16 @@ userfaultfd_initialize(void)
   }
 
   ufd_initialized = True;
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting userfaultfd_initialize() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting userfaultfd_initialize() function\n");
   fclose(file);
 }
 
 void
 reset_uffd(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering reset_uffd() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering reset_uffd() function\n");
   fclose(file);
   if (ufd_initialized) {
     JASSERT(page_size > 0);
@@ -487,8 +487,8 @@ reset_uffd(void)
 
   ufd_initialized = True;
   
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering reset_uffd() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering reset_uffd() function\n");
   fclose(file);
 }
 #else
@@ -543,8 +543,8 @@ void segvfault_handler(int, siginfo_t *, void *);
 void
 segvfault_initialize(void)
 {
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering segvfault_initialize() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering segvfault_initialize() function\n");
   fclose(file);
   if (segvfault_initialized) return;
 
@@ -566,14 +566,14 @@ segvfault_initialize(void)
   }
 
   segvfault_initialized = True;
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting segvfault_initialize() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting segvfault_initialize() function\n");
   fclose(file);
 }
 
 void segvfault_handler(int signum, siginfo_t *siginfo, void *context){
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Entering segvfault_handler() function");
+  FILE *file = fopen("tracelog.txt", "a");
+  fprintf(file, "Entering segvfault_handler() function\n");
   fclose(file);
   // get which address segfaulted 
   void *addr = (void *) siginfo->si_addr;
@@ -633,8 +633,8 @@ void segvfault_handler(int signum, siginfo_t *siginfo, void *context){
 //  }
   // the execution continues where it segfaulted, it
   // reexecutes the same instruction but it won't segfault this time.
-  FILE *file = fopen("tracelog.txt", "w"");
-  fprintf(file, "Exiting segvfault_handler() function");
+  file = fopen("tracelog.txt", "a");
+  fprintf(file, "Exiting segvfault_handler() function\n");
   fclose(file);
 }
 #endif
