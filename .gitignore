@@ -71,9 +71,11 @@ CRAC_plugin/mtcp/mtcp.t.orig
 CRAC_plugin/mtcp/testmtcp6
 CRAC_plugin/mtcp/util-arch
 
-#test/*
+CRUM_plugin/test/*
+CRAC_plugin/test/*
 !*.{c,h,cpp,java,py,in}
-#test/testconfig.py
+CRUM_plugin/test/testconfig.py
+CRAC_plugin/test/testconfig.py
 
 *.deps*
 
