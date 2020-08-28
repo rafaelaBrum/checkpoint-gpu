@@ -170,7 +170,7 @@ patchLibc(int fd, const void *base, const char *glibc)
   off_t munmapOffset;
   off_t sbrkOffset;
 #ifdef UBUNTU
-  char buf[256] = "/usr/lib/debug";
+  char buf[256] = "";
   buf[sizeof(buf)-1] = '\0';
   memcpy(buf+strlen(buf), glibc, strlen(glibc));
   /* if (access(buf, F_OK) == 0) {
@@ -178,6 +178,7 @@ patchLibc(int fd, const void *base, const char *glibc)
     //   http://sourceware.org/gdb/onlinedocs/gdb/Separate-Debug-Files.html
     fprintf(stderr, "Debug symbols for interpreter in: %s\n", buf);
   } */
+	printf("buf = %s\n", buf);
   int debug_libc_fd = open(buf, O_RDONLY);
   assert(debug_libc_fd != -1);
   mmapOffset = get_symbol_offset(debug_libc_fd, buf, MMAP_SYMBOL_NAME);

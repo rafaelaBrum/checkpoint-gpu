@@ -1,10 +1,10 @@
 # NOTE: Update the following variables for your system
 CC=/usr/bin/gcc-8
 CXX=/usr/bin/g++-8
-NVCC=/usr/local/cuda/bin/nvcc
+NVCC=/usr/local/cuda-10.2/bin/nvcc
 LD=${CXX}
-RTLD_PATH=/lib64/ld-linux-x86-64.so.2
-CUDA_INCLUDE_PATH=/usr/local/cuda/include/
+RTLD_PATH=/opt/glibc-2.27/lib/ld-2.27.so
+CUDA_INCLUDE_PATH=/usr/local/cuda-10.2/include/
 
 # The name will be the same as the current directory name.
 NAME=${shell basename $$PWD}
@@ -120,15 +120,15 @@ ${TARGET_OBJS}: test/target.c
 	${NVCC} ${INCLUDE_FLAGS} ${NVCC_OPTFLAGS} -c $< -o test/$@
 
 ${TARGET_BIN}: ${TARGET_OBJS}
-	${LD} test/$< -o test/$@ -L. -l${WRAPPER_LIB};
-	${NVCC} -g test/$< -o test/target.exe
+	${LD} test/$< -o test/$@ -L../split-cuda/ -l${WRAPPER_LIB};
+	${NVCC} -g test/$< -lcudart -o test/target.exe
 
 
 # Apparently, Nvidia libraries don't like -pie; so, we are forced
 # to link the kernel loader (which is really just emulating the lower
 # half) to a fixed address (0x800000)
 ${KERNEL_LOADER_BIN}: ${KERNEL_LOADER_OBJS}
-	${NVCC} ${NVCC_FLAGS} $^ -o $@ -lcuda -ldl -lcublas -lcusparse -lcusolver
+	${NVCC} ${NVCC_FLAGS} $^ -o $@ -lcuda -ldl -lcusparse -lcusolver -lcublas
 
 vi vim:
 	vim ${FILE}.cpp
@@ -142,7 +142,7 @@ dist: clean
 
 tidy:
 	rm -f ./ckpt.img *~ .*.swp dmtcp_restart_script*.sh ckpt_*.dmtcp \
-	ckpt_*.dmtcp.temp lhInfo* uhInfo* *.exe
+	ckpt_*.dmtcp.temp lhInfo* uhInfo* *.exe test/*.exe
 
 clean: tidy
 	rm -f ${KERNEL_LOADER_OBJS} test/${TARGET_OBJS} ${KERNEL_LOADER_BIN} \
