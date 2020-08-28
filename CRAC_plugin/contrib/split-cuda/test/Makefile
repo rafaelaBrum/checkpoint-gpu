@@ -1,9 +1,9 @@
 # NOTE: Update the following variables for your system
 CC=gcc
 CXX=g++
-NVCC=/usr/local/cuda/bin/nvcc
+NVCC=/usr/local/cuda-10.2/bin/nvcc
 LD=${CXX}
-CUDA_INCLUDE_PATH=/usr/local/cuda/include/
+CUDA_INCLUDE_PATH=/usr/local/cuda-10.2/include/
 
 
 # Wrapper library against which the target application will be linked.

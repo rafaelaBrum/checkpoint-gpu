@@ -78,7 +78,7 @@ safeLoadLib(const char *name)
   off_t mmap_offset;
   off_t sbrk_offset;
 #if UBUNTU
-  char buf[256] = "/usr/lib/debug";
+  char buf[256] = "/opt/glibc-2.27/lib/ld-2.27.so";
   buf[sizeof(buf)-1] = '\0';
   ssize_t rc = 0;
   rc = readlink(elf_interpreter, buf+strlen(buf), sizeof(buf)-strlen(buf)-1);
@@ -87,6 +87,7 @@ safeLoadLib(const char *name)
     //   http://sourceware.org/gdb/onlinedocs/gdb/Separate-Debug-Files.html
     fprintf(stderr, "Debug symbols for interpreter in: %s\n", buf);
   }
+  printf("(custom-loader --> safeLoadLib) buf = %s\n", buf);
   printf("%s\n", buf);
   int debug_ld_so_fd = open(buf, O_RDONLY);
   assert(debug_ld_so_fd != -1);
@@ -151,6 +152,7 @@ get_elf_interpreter(int fd, Elf64_Addr *cmd_entry,
   { char buf[256] = "/usr/lib/debug";
     buf[sizeof(buf)-1] = '\0';
     int rc = 0;
+	printf("(custom-loader --> get_elf_interpreter) buf = %s\n");
     rc = readlink(elf_interpreter, buf+strlen(buf), sizeof(buf)-strlen(buf)-1);
     if (rc != -1 && access(buf, F_OK) == 0) {
       // Debian family (Ubuntu, etc.) use this scheme to store debug symbols.
