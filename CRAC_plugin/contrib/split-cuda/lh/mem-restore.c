@@ -52,6 +52,7 @@ MtcpHeader mtcpHdr;
 void
 restoreCheckpointImg(int ckptfd)
 {
+	DLOG(TRACELOG, "Entering mem-restore.c --> restoreCheckpointImg function\n");
   assert(ckptfd != -1);
   //   Option step: mtcp_check_vdso(environ);
   readMtcpHeader(ckptfd);
@@ -60,16 +61,20 @@ restoreCheckpointImg(int ckptfd)
 
   restoreMemory(ckptfd);
   close(ckptfd);
+	DLOG(TRACELOG, "Exiting mem-restore.c --> restoreCheckpointImg function\n");
 }
 
 pid_t
 getUhPid(){
+	DLOG(TRACELOG, "Entering mem-restore.c --> getUhPid function\n");
+	DLOG(TRACELOG, "Exiting mem-restore.c --> getUhPid function\n");
   return mtcpHdr.orig_pid;
 }
 
 void
 returnTodmtcp()
 {
+	DLOG(TRACELOG, "Entering mem-restore.c --> returnTodmtcp function\n");
   double readTime = 0.0;
   int mtcp_sys_errno = 0;
   // restore the brk
@@ -80,6 +85,7 @@ returnTodmtcp()
 
   mtcpHdr.post_restart(readTime);
   DLOG(ERROR, "Restore failed! %d", mtcp_sys_errno);
+	DLOG(TRACELOG, "Exiting mem-restore.c --> returnTodmtcp function\n");
 }
 
 
@@ -100,6 +106,7 @@ restore_libc(ThreadTLSInfo *tlsInfo,
              int tls_tid_offset,
              MYINFO_GS_T myinfo_gs)
 {
+	DLOG(TRACELOG, "Entering mem-restore.c --> restore_libc function\n");
   int mtcp_sys_errno;
   /* Every architecture needs a register to point to the current
    * TLS (thread-local storage).  This is where we set it up.
@@ -127,12 +134,15 @@ restore_libc(ThreadTLSInfo *tlsInfo,
          mtcp_sys_errno);
     exit(-1);
   }
+	DLOG(TRACELOG, "Exiting mem-restore.c --> restore_libc function\n");
 }
 
 static int
 readMtcpHeader(int ckptFd)
 {
+	DLOG(TRACELOG, "Entering mem-restore.c --> readMtcpHeader function\n");
   readAll(ckptFd, &mtcpHdr, sizeof mtcpHdr);
+	DLOG(TRACELOG, "Exiting mem-restore.c --> readMtcpHeader function\n");
   return 1;
 }
 
@@ -151,11 +161,13 @@ readMtcpHeader(int ckptFd)
 static int
 restoreMemory(int ckptfd)
 {
+	DLOG(TRACELOG, "Entering mem-restore.c --> restoreMemory function\n");
   int rc = 0;
   Area area = {0};
   while (!rc && readAll(ckptfd, &area, sizeof area)) {
     rc = restoreMemoryRegion(ckptfd, &area);
   };
+	DLOG(TRACELOG, "Exiting mem-restore.c --> restoreMemory function\n");
   return rc;
 }
 
@@ -163,6 +175,7 @@ restoreMemory(int ckptfd)
 static int
 restoreMemoryRegion(int ckptfd, Area* area)
 {
+	DLOG(TRACELOG, "Entering mem-restore.c --> restoreMemoryRegion function\n");
   assert(area != NULL);
 
   ssize_t bytes = 0;
@@ -259,6 +272,7 @@ restoreMemoryRegion(int ckptfd, Area* area)
       DLOG(ERROR, "Failed to add temporary  write perms for memory region (%s) at: %p "
            "of: %zu bytes. Error: %s\n",
            area->name, area->addr, area->size, strerror(errno));
+	DLOG(TRACELOG, "Exiting mem-restore.c --> restoreMemoryRegion function with error\n");
       return -1;
     }
     if (imagefd >= 0 && !(area->flags & MAP_ANONYMOUS)) {
@@ -269,6 +283,7 @@ restoreMemoryRegion(int ckptfd, Area* area)
     if (bytes < area->size) {
       DLOG(ERROR, "Read failed for memory region (%s) at: %p of: %zu bytes. "
            "Error: %s\n", area->name, area->addr, area->size, strerror(errno));
+	DLOG(TRACELOG, "Exiting mem-restore.c --> restoreMemoryRegion function with error\n");
       return -1;
     }
     // Restore region permissions
@@ -277,8 +292,10 @@ restoreMemoryRegion(int ckptfd, Area* area)
      DLOG(ERROR, "Failed to restore perms for memory region (%s) at: %p "
           "of: %zu bytes. Error: %s\n",
           area->name, area->addr, area->size, strerror(errno));
+	DLOG(TRACELOG, "Exiting mem-restore.c --> restoreMemoryRegion function with error\n");
      return -1;
    }
   }
+	DLOG(TRACELOG, "Exiting mem-restore.c --> restoreMemoryRegion function\n");
   return 0;
 }

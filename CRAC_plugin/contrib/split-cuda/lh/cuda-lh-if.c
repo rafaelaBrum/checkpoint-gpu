@@ -43,10 +43,12 @@ static void* Cuda_Fnc_Ptrs[] = {
 void*
 lhDlsym(Cuda_Fncs_t fnc)
 {
+	DLOG(TRACELOG, "Entering sbrk-cuda-lh-if.c --> lhDlsym function\n");
   DLOG(INFO, "LH: Dlsym called with: %d\n", fnc);
   if (fnc < Cuda_Fnc_NULL || fnc > Cuda_Fnc_Invalid) {
     return NULL;
   }
   void *addr = Cuda_Fnc_Ptrs[fnc];
+	DLOG(TRACELOG, "Exiting	sbrk-cuda-lh-if.c --> lhDlsym function\n");
   return addr;
 }

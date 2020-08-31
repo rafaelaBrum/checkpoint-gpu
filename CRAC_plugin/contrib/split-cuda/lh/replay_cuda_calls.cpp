@@ -44,6 +44,7 @@ void **new_fatCubinHandle = NULL;
 
 void replayAPI(CudaCallLog_t *l)
 {
+	DLOG(TRACELOG, "Entering replay_cuda_calls.cpp --> replayAPI function\n");
   Cuda_Fncs_t op;
   memcpy(&op, l->fncargs, sizeof op);
   size_t chars_read = sizeof op;
@@ -1155,6 +1156,7 @@ void replayAPI(CudaCallLog_t *l)
      break;
       // JASSERT(false)(op).Text("Replaying unknown op code");
   }
+	DLOG(TRACELOG, "Exiting replay_cuda_calls.cpp --> replayAPI function\n");
 }
 
 // This function iterates over the CUDA calls log and calls the given
@@ -1162,9 +1164,11 @@ void replayAPI(CudaCallLog_t *l)
 // void logs_read_and_apply(void (*apply)(CudaCallLog_t *l))
 void logs_read_and_apply()
 {
+	DLOG(TRACELOG, "Entering replay_cuda_calls.cpp --> logs_read_and_apply function\n");
   GetCudaCallsLogFptr_t fnc = (GetCudaCallsLogFptr_t)uhInfo.cudaLogVectorFptr;
   std::vector<CudaCallLog_t>& cudaCallsLog = fnc();
   for (auto it = cudaCallsLog.begin(); it != cudaCallsLog.end(); it++) {
     replayAPI(&(*it));
   }
+	DLOG(TRACELOG, "Exiting replay_cuda_calls.cpp --> logs_read_and_apply function\n");
 }

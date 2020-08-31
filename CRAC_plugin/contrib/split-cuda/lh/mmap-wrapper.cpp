@@ -66,6 +66,8 @@ static void updateMmaps(void *, size_t);
 bool
 compare (MmapInfo_t &a, MmapInfo_t &b)
 {
+	DLOG(TRACELOG, "Entering mmap-wrapper.cpp --> compare function\n");
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> compare function\n");
   return (a.addr < b.addr);
 }
 
@@ -74,9 +76,11 @@ compare (MmapInfo_t &a, MmapInfo_t &b)
 vector<MmapInfo_t> &
 getMmappedList(int *num)
 {
+	DLOG(TRACELOG, "Entering mmap-wrapper.cpp --> getMmappedList function\n");
   *num = mmaps.size();
   // sort the mmaps list by address
   sort(mmaps.begin(), mmaps.end(), compare);
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> getMmappedList function\n");
   return mmaps;
 }
 
@@ -84,10 +88,12 @@ void*
 mmapWrapper(void *addr, size_t length, int prot,
             int flags, int fd, off_t offset)
 {
+	DLOG(TRACELOG, "Entering mmap-wrapper.cpp --> mmapWrapper function\n");
   void *ret = MAP_FAILED;
   JUMP_TO_LOWER_HALF(lhInfo.lhFsAddr);
   ret = __mmapWrapper(addr, length, prot, flags, fd, offset);
   RETURN_TO_UPPER_HALF();
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> mmapWrapper function\n");
   return ret;
 }
 
@@ -95,6 +101,7 @@ static void*
 __mmapWrapper(void *addr, size_t length, int prot,
               int flags, int fd, off_t offset)
 {
+	DLOG(TRACELOG, "Entering mmap-wrapper.cpp --> __mmapWrapper function\n");
   void *ret = MAP_FAILED;
   if (offset & MMAP_OFF_MASK) {
     errno = EINVAL;
@@ -125,25 +132,30 @@ __mmapWrapper(void *addr, size_t length, int prot,
       }
     }
   }
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> __mmapWrapper function\n");
   return ret;
 }
 
 int
 munmapWrapper(void *addr, size_t length)
 {
+	DLOG(TRACELOG, "Entering mmap-wrapper.cpp --> munmapWrapper function\n");
   int ret = -1;
   JUMP_TO_LOWER_HALF(lhInfo.lhFsAddr);
   ret = __munmapWrapper(addr, length);
   RETURN_TO_UPPER_HALF();
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> munmapWrapper function\n");
   return ret;
 }
 
 static int
 __munmapWrapper(void *addr, size_t length)
 {
+	DLOG(TRACELOG, "Entering mmap-wrapper.cpp --> __munmapWrapper function\n");
   int ret = -1;
   if (addr == 0) {
     errno = EINVAL;
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> __munmapWrapper function\n");
     return ret;
   }
   length = ROUND_UP(length);
@@ -152,12 +164,14 @@ __munmapWrapper(void *addr, size_t length)
     updateMmaps(addr, length);
     DLOG(4, "LH: munmap (%lu): %p @ 0x%zx\n", mmaps.size(), addr, length);
   }
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> __munmapWrapper function\n");
   return ret;
 }
 
 static void
 patchLibc(int fd, const void *base, const char *glibc)
 {
+	DLOG(TRACELOG, "Entering mmap-wrapper.cpp --> patchLibc function\n");
   assert(base);
   assert(fd > 0);
   const char *MMAP_SYMBOL_NAME = "mmap";
@@ -200,19 +214,23 @@ patchLibc(int fd, const void *base, const char *glibc)
        glibc, base, sbrkOffset, mmapOffset);
   // Restore file offset to not upset the caller
   lseek(fd, saveOffset, SEEK_SET);
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> patchLibc function\n");
 }
 
 void
 addRegionTommaps(void * addr, size_t length) {
+	DLOG(TRACELOG, "Entering mmap-wrapper.cpp --> addRegionTommaps function\n");
   MmapInfo_t newRegion;
   newRegion.addr = addr;
   newRegion.len = length;
   mmaps.push_back(newRegion);
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> addRegionTommaps function\n");
 }
 
 
 void
 updateMmaps(void *addr, size_t length) {
+	DLOG(TRACELOG, "Entering mmap-wrapper.cpp --> updateMmaps function\n");
   // traverse through the mmap'ed list and check whether to remove the whole
   // entry or update the address and length
   uint64_t unmaped_start_addr = (uint64_t)addr;
@@ -272,4 +290,5 @@ updateMmaps(void *addr, size_t length) {
         }
     }
   }
+	DLOG(TRACELOG, "Exiting mmap-wrapper.cpp --> addRegionTommaps function\n");
 }

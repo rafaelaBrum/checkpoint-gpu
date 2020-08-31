@@ -54,6 +54,7 @@ static void* map_elf_interpreter_load_segment(int , Elf64_Phdr , void* );
 DynObjInfo_t
 safeLoadLib(const char *name)
 {
+	DLOG(TRACELOG, "Entering custom-loader.cpp --> safeLoadLib function\n");
   void *ld_so_addr = NULL;
   DynObjInfo_t info = {0};
 
@@ -107,6 +108,7 @@ safeLoadLib(const char *name)
   close(ld_so_fd);
   info.entryPoint = (void*)((unsigned long)info.baseAddr +
                             (unsigned long)cmd_entry);
+	DLOG(TRACELOG, "Exiting custom-loader.cpp --> safeLoadLib function\n");
   return info;
 }
 
@@ -115,6 +117,7 @@ static void
 get_elf_interpreter(int fd, Elf64_Addr *cmd_entry,
                     char* elf_interpreter, void *ld_so_addr)
 {
+	DLOG(TRACELOG, "Entering custom-loader.cpp --> get_elf_interpreter function\n");
   int rc;
   char e_ident[EI_NIDENT];
 
@@ -163,6 +166,7 @@ get_elf_interpreter(int fd, Elf64_Addr *cmd_entry,
 #else // ifdef UBUNTU
   }
 #endif // ifdef UBUNTU
+	DLOG(TRACELOG, "Exiting custom-loader.cpp --> get_elf_interpreter function\n");
 }
 
 static void*
@@ -170,6 +174,7 @@ load_elf_interpreter(int fd, char *elf_interpreter,
                      Elf64_Addr *ld_so_entry, void *ld_so_addr,
                      DynObjInfo_t *info)
 {
+	DLOG(TRACELOG, "Entering custom-loader.cpp --> load_elf_interpreter function\n");
   char e_ident[EI_NIDENT];
   int rc;
   int firstTime = 1;
@@ -207,12 +212,14 @@ load_elf_interpreter(int fd, char *elf_interpreter,
   }
   info->phnum = elf_hdr.e_phnum;
   info->phdr = (VA)baseAddr + elf_hdr.e_phoff;
+	DLOG(TRACELOG, "Exiting custom-loader.cpp --> load_elf_interpreter function\n");
   return baseAddr;
 }
 
 static void*
 map_elf_interpreter_load_segment(int fd, Elf64_Phdr phdr, void *ld_so_addr)
 {
+	DLOG(TRACELOG, "Entering custom-loader.cpp --> map_elf_interpreter_load_segment function\n");
   static char *base_address = NULL; // is NULL on call to first LOAD segment
   static int first_time = 1;
   int prot = PROT_NONE;
@@ -299,5 +306,6 @@ map_elf_interpreter_load_segment(int fd, Elf64_Phdr phdr, void *ld_so_addr)
     first_time = 0;
     base_address = (char *)rc2;
   }
+	DLOG(TRACELOG, "Exiting custom-loader.cpp --> map_elf_interpreter_load_segment function\n");
   return base_address;
 }

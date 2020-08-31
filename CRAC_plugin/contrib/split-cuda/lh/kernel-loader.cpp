@@ -75,6 +75,7 @@ static void printRestartUsage();
 void
 runRtld()
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> runRtld function\n");
   int rc = -1;
 
   // Pointer to the ld.so entry point
@@ -139,6 +140,7 @@ runRtld()
   asm volatile (CLEAN_FOR_64_BIT(mov %0, %%esp; )
                 : : "g" (newStack) : "memory");
   asm volatile ("jmp *%0" : : "g" (ldso_entrypoint) : "memory");
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> runRtld function\n");
 }
 
 // Local functions
@@ -146,21 +148,26 @@ runRtld()
 static void
 printUsage()
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> printUsage function\n");
   DLOG(ERROR, "Usage: UH_PRELOAD=/path/to/libupperhalfwrappers.so "
           "TARGET_LD=/path/to/ld.so ./kernel-loader "
           "<target-application> [application arguments ...]\n");
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> printUsage function\n");
 }
 
 static void
 printRestartUsage()
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> printRestartUsage function\n");
   DLOG(ERROR, "Usage: ./kernel-loader --restore /path/to/ckpt.img\n");
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> printRestartUsage function\n");
 }
 
 // #define shift argv++; argc--;
 int
 main(int argc, char *argv[], char **environ)
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> main function\n");
   if (argc < 2) {
     printUsage();
     return -1;
@@ -193,6 +200,7 @@ main(int argc, char *argv[], char **environ)
     // dprintf(stderr_fd, "Restore failed!");
   }
   runRtld();
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> main function\n");
   return 0;
 }
 
@@ -201,6 +209,7 @@ main(int argc, char *argv[], char **environ)
 static void
 getProcStatField(enum Procstat_t type, char *out, size_t len)
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> getProcStatField function\n");
   const char *procPath = "/proc/self/stat";
   char sbuf[1024] = {0};
   int field_counter = 0;
@@ -229,12 +238,14 @@ getProcStatField(enum Procstat_t type, char *out, size_t len)
   } else {
     DLOG(ERROR, "Failed to parse %s.\n", procPath);
   }
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> getProcStatField function\n");
 }
 
 // Returns the [stack] area by reading the proc maps
 static void
 getStackRegion(Area *stack) // OUT
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> getStackRegion function\n");
   Area area;
   int mapsfd = open("/proc/self/maps", O_RDONLY);
   while (readMapsLine(mapsfd, &area)) {
@@ -244,6 +255,7 @@ getStackRegion(Area *stack) // OUT
     }
   }
   close(mapsfd);
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> getStackRegion function\n");
 }
 
 // Given a pointer to aux vector, parses the aux vector, and patches the
@@ -252,6 +264,7 @@ static void
 patchAuxv(ElfW(auxv_t) *av, unsigned long phnum,
           unsigned long phdr, unsigned long entry)
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> patchAuxv function\n");
   for (; av->a_type != AT_NULL; ++av) {
     switch (av->a_type) {
       case AT_PHNUM:
@@ -270,6 +283,7 @@ patchAuxv(ElfW(auxv_t) *av, unsigned long phnum,
         break;
     }
   }
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> patchAuxv function\n");
 }
 
 // Creates a deep copy of the stack region pointed to be `origStack` at the
@@ -280,6 +294,7 @@ deepCopyStack(void *newStack, const void *origStack, size_t len,
               const void *newStackEnd, const void *origStackEnd,
               const DynObjInfo_t *info)
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> deepCopyStack function\n");
   // This function assumes that this env var is set.
   assert(getenv("TARGET_LD"));
   assert(getenv("UH_PRELOAD"));
@@ -398,6 +413,7 @@ printf("newArgv[-2]: %lu \n", (unsigned long)&newArgv[0]);
   // We clear out the rest of the new stack region just in case ...
   memset(newStack, 0, (size_t)((uintptr_t)&newArgv[-2] - (uintptr_t)newStack));
 
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> deepCopyStack function\n");
   // Return the start of new stack.
   return (void*)newArgcAddr;
 }
@@ -409,6 +425,7 @@ printf("newArgv[-2]: %lu \n", (unsigned long)&newArgv[0]);
 static void*
 createNewStackForRtld(const DynObjInfo_t *info)
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> createNewStackForRtld function\n");
   Area stack;
   char stackEndStr[20] = {0};
   getStackRegion(&stack);
@@ -460,6 +477,7 @@ printf("newStack: %lu newStackOffset: %lu newStackEnd: %lu \n", (unsigned long)n
                               (void*)newStackEnd, (void*)origStackEnd,
                               info);
 
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> createNewStackForRtld function\n");
   return newStackEnd;
 }
 
@@ -471,6 +489,7 @@ printf("newStack: %lu newStackOffset: %lu newStackEnd: %lu \n", (unsigned long)n
 static void*
 createNewHeapForRtld(const DynObjInfo_t *info)
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> createNewHeapForRtld function\n");
   const uint64_t heapSize = 100 * PAGE_SIZE;
 
   // We go through the mmap wrapper function to ensure that this gets added
@@ -487,6 +506,7 @@ createNewHeapForRtld(const DynObjInfo_t *info)
   mprotect(addr, PAGE_SIZE, PROT_NONE);
   setUhBrk((void*)((VA)addr + PAGE_SIZE));
   setEndOfHeap((void*)((VA)addr + heapSize));
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> createNewHeapForRtld function\n");
   return addr;
 }
 
@@ -495,6 +515,8 @@ createNewHeapForRtld(const DynObjInfo_t *info)
 static void*
 getEntryPoint(DynObjInfo_t info)
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> getEntryPoint function\n");
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> getEntryPoint function\n");
   return info.entryPoint;
 }
 
@@ -503,12 +525,14 @@ getEntryPoint(DynObjInfo_t info)
 static int
 writeLhInfoToFile()
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> writeLhInfoToFile function\n");
   size_t rc = 0;
   char filename[100];
   snprintf(filename, 100, "./lhInfo_%d", getpid());
   int fd = open(filename, O_WRONLY | O_CREAT, 0644);
   if (fd < 0) {
     DLOG(ERROR, "Could not create addr.bin file. Error: %s", strerror(errno));
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> writeLhInfoToFile function with error\n");
     return -1;
   }
 
@@ -519,6 +543,7 @@ writeLhInfoToFile()
     rc = -1;
   }
   close(fd);
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> writeLhInfoToFile function\n");
   return rc;
 }
 
@@ -527,6 +552,7 @@ writeLhInfoToFile()
 static int
 setupLowerHalfInfo()
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> setupLowerHalfInfo function\n");
   lhInfo.lhSbrk = (void *)&sbrkWrapper;
   lhInfo.lhMmap = (void *)&mmapWrapper;
   lhInfo.lhMunmap = (void *)&munmapWrapper;
@@ -539,6 +565,7 @@ setupLowerHalfInfo()
   if (syscall(SYS_arch_prctl, ARCH_GET_FS, &lhInfo.lhFsAddr) < 0) {
     DLOG(ERROR, "Could not retrieve lower half's fs. Error: %s. Exiting...\n",
          strerror(errno));
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> setupLowerHalfInfo function with error\n");
     return -1;
   }
   // FIXME: We'll just write out the lhInfo object to a file; the upper half
@@ -547,14 +574,17 @@ setupLowerHalfInfo()
   int rc = writeLhInfoToFile();
   if (rc < 0) {
     DLOG(ERROR, "Error writing address of lhinfo to file. Exiting...\n");
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> setupLowerHalfInfo function with error\n");
     return -1;
   }
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> setupLowerHalfInfo function\n");
   return 0;
 }
 
 static void
 readUhInfoAddr()
 {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> readUhInfoAddr function\n");
   char filename[100];
   // snprintf(filename, 100, "./uhInfo_%d", getpid());
   pid_t orig_pid = getUhPid();
@@ -571,6 +601,7 @@ readUhInfoAddr()
   }
 //  unlink(UH_FILE_NAME);
 //  close(fd);
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> readUhInfoAddr function\n");
 }
 
 // enum for types
@@ -587,6 +618,7 @@ readUhInfoAddr()
 
 void
 copy_lower_half_data() {
+	DLOG(TRACELOG, "Entering kernel-loader.cpp --> copy_lower_half_data function\n");
   void * lhpages_addr = uhInfo.lhPagesRegion;
 
   // read total entries count
@@ -637,4 +669,5 @@ copy_lower_half_data() {
         break;
     }
   }
+	DLOG(TRACELOG, "Exiting kernel-loader.cpp --> copy_lower_half_data function\n");
 }

@@ -37,28 +37,36 @@ static void* __sbrkWrapper(intptr_t );
 void *
 getEndOfHeap()
 {
+	DLOG(TRACELOG, "Entering sbrk-wrapper.cpp --> getEndOfHeap function\n");
+	DLOG(TRACELOG, "Exiting sbrk-wrapper.cpp --> getEndOfHeap function\n");
   return __endOfHeap;
 }
 
 void
 setEndOfHeap(void *addr)
 {
+	DLOG(TRACELOG, "Entering sbrk-wrapper.cpp --> setEndOfHeap function\n");
   __endOfHeap = (void*)ROUND_UP(addr);
+	DLOG(TRACELOG, "Exiting sbrk-wrapper.cpp --> setEndOfHeap function\n");
 }
 
 void
 setUhBrk(void *addr)
 {
+	DLOG(TRACELOG, "Entering sbrk-wrapper.cpp --> setUhBrk function\n");
   __curbrk = addr;
+	DLOG(TRACELOG, "Exiting sbrk-wrapper.cpp --> setUhBrk function\n");
 }
 
 void*
 sbrkWrapper(intptr_t increment)
 {
+	DLOG(TRACELOG, "Entering sbrk-wrapper.cpp --> sbrkWrapper function\n");
   void *addr = NULL;
   JUMP_TO_LOWER_HALF(lhInfo.lhFsAddr);
   addr = __sbrkWrapper(increment);
   RETURN_TO_UPPER_HALF();
+	DLOG(TRACELOG, "Exiting sbrk-wrapper.cpp --> sbrkWrapper function\n");
   return addr;
 }
 
@@ -68,6 +76,7 @@ sbrkWrapper(intptr_t increment)
 static void*
 __sbrkWrapper(intptr_t increment)
 {
+	DLOG(TRACELOG, "Entering sbrk-wrapper.cpp --> __sbrkWrapper function\n");
   void *oldbrk;
 
   DLOG(NOISE, "LH: sbrk called with 0x%lx\n", increment);
@@ -109,5 +118,6 @@ __sbrkWrapper(intptr_t increment)
 
   DLOG(NOISE, "LH: sbrk returning %p\n", oldbrk);
 
+	DLOG(TRACELOG, "Exiting sbrk-wrapper.cpp --> __sbrkWrapper function\n");
   return oldbrk;
 }

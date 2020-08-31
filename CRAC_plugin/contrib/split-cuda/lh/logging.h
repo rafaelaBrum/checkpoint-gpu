@@ -28,9 +28,10 @@
 #include <linux/limits.h>
 
 // Logging levels
-#define NOISE 3 // Noise!
-#define INFO  2 // Informational logs
-#define ERROR 1 // Highest error/exception level
+#define TRACELOG 4 // Execution trace
+#define NOISE    3 // Noise!
+#define INFO     2 // Informational logs
+#define ERROR    1 // Highest error/exception level
 
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -44,8 +45,8 @@
 static const char *colors[] = {KNRM, KRED, KBLU, KGRN, KYEL};
 
 #ifndef DEBUG_LEVEL
-// Let's announce errors out loud
-# define DEBUG_LEVEL 1
+// Let's announce errors out loud and everything (TO DO: return to 1 here)
+# define DEBUG_LEVEL 4
 #endif // ifndef DEBUG_LEVEL
 
 #define DLOG(LOG_LEVEL, fmt, ...)                                              \
