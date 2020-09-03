@@ -1,7 +1,7 @@
 # NOTE: Update the following variables for your system
-CC=gcc
-CXX=g++
-NVCC=/usr/local/cuda-10.2/bin/nvcc
+CC=LD_LIBRARY_PATH=/opt/glibc-2.27/lib/ld-2.27.so gcc
+CXX=LD_LIBRARY_PATH=/opt/glibc-2.27/lib/ld-2.27.so g++
+NVCC=LD_LIBRARY_PATH=/opt/glibc-2.27/lib/ld-2.27.so /usr/local/cuda-10.2/bin/nvcc
 LD=${CXX}
 CUDA_INCLUDE_PATH=/usr/local/cuda-10.2/include/
 

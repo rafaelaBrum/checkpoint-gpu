@@ -30,6 +30,7 @@
 
 #include "getmmap.h"
 #include "common.h"
+#include "logging.h"
 
 #if !defined(__CUDA_INCLUDE_COMPILER_INTERNAL_HEADERS__)
 #define __CUDA_INCLUDE_COMPILER_INTERNAL_HEADERS__

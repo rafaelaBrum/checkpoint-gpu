@@ -116,6 +116,7 @@ checkLibrary(int fd, const char* name,
          procPath, strerror(errno));
     return 0;
   }
+	DLOG(NOISE, "glibcFullPath = %s | procPath = %s | fullPath = %s\n", glibcFullPath, procPath, fullPath);
   if (strstr(fullPath, name)) {
     strncpy(glibcFullPath, fullPath, size);
     return 1;

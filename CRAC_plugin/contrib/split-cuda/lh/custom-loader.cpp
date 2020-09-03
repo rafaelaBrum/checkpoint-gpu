@@ -89,7 +89,6 @@ safeLoadLib(const char *name)
     fprintf(stderr, "Debug symbols for interpreter in: %s\n", buf);
   }
   printf("(custom-loader --> safeLoadLib) buf = %s\n", buf);
-  printf("%s\n", buf);
   int debug_ld_so_fd = open(buf, O_RDONLY);
   assert(debug_ld_so_fd != -1);
   mmap_offset = get_symbol_offset(debug_ld_so_fd, buf, "mmap");

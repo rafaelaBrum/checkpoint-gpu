@@ -111,7 +111,7 @@ __mmapWrapper(void *addr, size_t length, int prot,
   ret = _real_mmap(addr, length, prot, flags, fd, offset);
   if (ret != MAP_FAILED) {
     addRegionTommaps(ret, length);
-    // DLOG(NOISE, "LH: mmap (%lu): %p @ 0x%zx\n", mmaps.size(), ret, length);
+    DLOG(NOISE, "LH: mmap (%lu): %p @ 0x%zx\n", mmaps.size(), ret, length);
     if (fd > 0) {
       char glibcFullPath[PATH_MAX] = {0};
       int found = checkLibrary(fd, "libc-", glibcFullPath, PATH_MAX);
